@@ -54,8 +54,8 @@ class Capsule {
     void raise_error_if_misuse_unified()
     {
         static_assert(
-            (LOC == cusz::LOC::UNIFIED and USE_UNIFIED == true)           //
-                or (LOC != cusz::LOC::UNIFIED and USE_UNIFIED == false),  //
+            (LOC == cusz::LOC::UNIFIED && USE_UNIFIED == true)           //
+                || (LOC != cusz::LOC::UNIFIED && USE_UNIFIED == false),  //
             "[Capsule] misused unified memory API");
     }
 
@@ -176,7 +176,7 @@ class Capsule {
         auto a = hires::now();
 
         if (DST == cusz::LOC::HOST) {
-            if (not hptr) throw std::runtime_error(ERRSTR_BUILDER("from_file", "hptr not set"));
+            if (!hptr) throw std::runtime_error(ERRSTR_BUILDER("from_file", "hptr not set"));
             if (len == 0) throw std::runtime_error(ERRSTR_BUILDER("from_file", "len == 0"));
             io::read_binary_to_array<T>(fname, hptr, len);  // interprete as T (bytes = len * sizeof(T))
         }
@@ -205,13 +205,13 @@ class Capsule {
     Capsule& to_file(std::string fname)
     {
         if (SRC == cusz::LOC::HOST) {
-            if (not hptr) {  //
+            if (!hptr) {  //
                 throw std::runtime_error(ERRSTR_BUILDER("to_file", "hptr not set"));
             }
             io::write_array_to_binary<T>(fname, hptr, len);
         }
         else if (SRC == cusz::LOC::UNIFIED) {
-            if (not uniptr) {  //
+            if (!uniptr) {  //
                 throw std::runtime_error(ERRSTR_BUILDER("to_file", "uniptr not set"));
             }
             io::write_array_to_binary<T>(fname, uniptr, len);
@@ -326,20 +326,20 @@ class Capsule {
         raise_error_if_misuse_unified<LOC>();
 
         auto free_host = [&]() {
-            if (not hptr) throw std::runtime_error(ERRSTR_BUILDER("free", "hptr is null"));
+            if (!hptr) throw std::runtime_error(ERRSTR_BUILDER("free", "hptr is null"));
 
             cudaFreeHost(hptr);
             allocation_status.hptr = false;
         };
         auto free_device = [&]() {
-            if (not dptr) throw std::runtime_error(ERRSTR_BUILDER("free", "dptr is null"));
+            if (!dptr) throw std::runtime_error(ERRSTR_BUILDER("free", "dptr is null"));
 
             cudaFree(dptr);
             allocation_status.dptr = false;
         };
 
         auto free_unified = [&]() {
-            if (not uniptr) throw std::runtime_error(ERRSTR_BUILDER("free", "uniptr is null"));
+            if (!uniptr) throw std::runtime_error(ERRSTR_BUILDER("free", "uniptr is null"));
 
             cudaFree(uniptr);
             allocation_status.uniptr = false;

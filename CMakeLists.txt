@@ -12,25 +12,32 @@ set(CMAKE_CXX_STANDARD 14)
 ## to specify CUDA arch.
 
 enable_language(CUDA)
+find_package(CUDAToolkit REQUIRED)
 
 #include_directories(src)
 #include_directories(src/pSZ)
 
 ## TODO flag only add to a specific library, e.g. suppressing deprecation on CUDA10 cuSPARSE
 set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --extended-lambda --expt-relaxed-constexpr -Wno-deprecated-declarations")
-
 set(LIB_TYPE STATIC)
 
 add_library(pq ${LIB_TYPE} src/wrapper/extrap_lorenzo.cu src/wrapper/interp_spline3.cu)
-add_library(argp ${LIB_TYPE} src/context.cc)
+
+add_library(argp ${LIB_TYPE} src/utils/format.cc src/context.cc)
+
 add_library(sp ${LIB_TYPE} src/wrapper/csr11.cu)
-target_link_libraries(sp PUBLIC -lcusparse)
+target_link_libraries(sp PUBLIC CUDA::cusparse)
+
 add_library(huff ${LIB_TYPE} src/wrapper/huffman_parbook.cu src/wrapper/huffman_coarse.cu)
-target_link_libraries(huff PUBLIC -lcusparse -lcuda)
+target_link_libraries(huff PUBLIC CUDA::cusparse)
 set_target_properties(huff PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+set_target_properties(huff PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+
 add_library(compress ${LIB_TYPE} src/default_path.cu src/base_compressor.cu src/sp_path.cu)
-add_library(cusz ${LIB_TYPE} src/app.cu)
+
+add_library(cusz-lib ${LIB_TYPE} src/query.cc src/app.cu)
+target_link_libraries(cusz-lib PUBLIC ${CUDA_LIBRARIES} CUDA::cuda_driver)
 
 add_executable(cusz-bin src/cusz-cli.cu)
-target_link_libraries(cusz-bin cusz compress argp huff sp pq)
+target_link_libraries(cusz-bin cusz-lib compress argp huff sp pq)
 set_target_properties(cusz-bin PROPERTIES OUTPUT_NAME cusz)

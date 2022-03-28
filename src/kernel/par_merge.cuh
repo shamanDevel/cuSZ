@@ -257,7 +257,7 @@ __device__ void cudaWorkloadDiagonals(
             if (getfrom_y >= iNodesCap) getfrom_y -= iNodesCap;
 
             // Are we a '1' or '0' with respect to A[x] <= B[x]
-            if (current_x > (int32_t)A_length or current_y < 0) { oneorzero[threadIdx.x] = 0; }
+            if (current_x > (int32_t)A_length || current_y < 0) { oneorzero[threadIdx.x] = 0; }
             else if (current_y >= (int32_t)B_length || current_x < 1) {
                 oneorzero[threadIdx.x] = 1;
             }
@@ -270,8 +270,8 @@ __device__ void cudaWorkloadDiagonals(
 
         // If we find the meeting of the '1's and '0's, we found the
         // intersection of the path and diagonal
-        if (threadIdx.x > 0 and                                     //
-            threadIdx.x < 32 and                                    //
+        if (threadIdx.x > 0 &&                                     //
+            threadIdx.x < 32 &&                                    //
             (oneorzero[threadIdx.x] != oneorzero[threadIdx.x - 1])  //
         ) {
             found = 1;

@@ -88,7 +88,7 @@ template <typename T, typename FREQ>
 __global__ void kernel::p2013Histogram(T* in_data, FREQ* out_freq, size_t N, int nbin, int R)
 {
     static_assert(
-        std::numeric_limits<T>::is_integer and (not std::numeric_limits<T>::is_signed),
+        std::numeric_limits<T>::is_integer && (!std::numeric_limits<T>::is_signed),
         "T must be `unsigned integer` type of {1,2,4} bytes");
 
     extern __shared__ int Hs[/*(nbin + 1) * R*/];
@@ -130,7 +130,7 @@ void kernel_wrapper::get_frequency(
     cudaStream_t stream)
 {
     static_assert(
-        std::numeric_limits<T>::is_integer and (not std::numeric_limits<T>::is_signed),
+        std::numeric_limits<T>::is_integer && (!std::numeric_limits<T>::is_signed),
         "To get frequency, `T` must be unsigned integer type of {1,2,4} bytes");
 
     int device_id, max_bytes, num_SMs;

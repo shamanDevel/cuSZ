@@ -130,10 +130,10 @@ template <bool INCLUSIVE = true>
 __forceinline__ __device__ bool xyz33x9x9_predicate(unsigned int x, unsigned int y, unsigned int z)
 {
     if CONSTEXPR (INCLUSIVE) {  //
-        return x <= 32 and y <= 8 and z <= 8;
+        return x <= 32 && y <= 8 && z <= 8;
     }
     else {
-        return x < 32 and y < 8 and z < 8;
+        return x < 32 && y < 8 && z < 8;
     }
 }
 
@@ -194,7 +194,7 @@ c_reset_scratch_33x9x9data(volatile T1 shm_data[9][9][33], volatile T2 shm_errct
         /*****************************************************************************
          okay to use
          ******************************************************************************/
-        if (x % 8 == 0 and y % 8 == 0 and z % 8 == 0) shm_errctrl[z][y][x] = radius;
+        if (x % 8 == 0 && y % 8 == 0 && z % 8 == 0) shm_errctrl[z][y][x] = radius;
         /*****************************************************************************
          alternatively
          ******************************************************************************/
@@ -210,10 +210,10 @@ __device__ void c_gather_anchor(T1* data, DIM3 data_size, STRIDE3 data_leap, T1*
     auto y = (TIX / 32) % 8 + BIY * 8;
     auto z = (TIX / 32) / 8 + BIZ * 8;
 
-    bool pred1 = x % 8 == 0 and y % 8 == 0 and z % 8 == 0;
-    bool pred2 = x < data_size.x and y < data_size.y and z < data_size.z;
+    bool pred1 = x % 8 == 0 && y % 8 == 0 && z % 8 == 0;
+    bool pred2 = x < data_size.x && y < data_size.y && z < data_size.z;
 
-    if (pred1 and pred2) {
+    if (pred1 && pred2) {
         auto data_id      = x + y * data_leap.y + z * data_leap.z;
         auto anchor_id    = (x / 8) + (y / 8) * anchor_leap.y + (z / 8) * anchor_leap.z;
         anchor[anchor_id] = data[data_id];
@@ -264,14 +264,14 @@ __device__ void x_reset_scratch_33x9x9data(
         /*****************************************************************************
          okay to use
          ******************************************************************************/
-        if (x % 8 == 0 and y % 8 == 0 and z % 8 == 0) {
+        if (x % 8 == 0 && y % 8 == 0 && z % 8 == 0) {
             shm_xdata[z][y][x] = 0;
 
             auto ax = ((x / 8) + BIX * 4);
             auto ay = ((y / 8) + BIY);
             auto az = ((z / 8) + BIZ);
 
-            if (ax < anchor_size.x and ay < anchor_size.y and az < anchor_size.z)
+            if (ax < anchor_size.x && ay < anchor_size.y && az < anchor_size.z)
                 shm_xdata[z][y][x] = anchor[ax + ay * anchor_leap.y + az * anchor_leap.z];
         }
         /*****************************************************************************
@@ -298,7 +298,7 @@ global2shmem_33x9x9data(Input* data, DIM3 data_size, STRIDE3 data_leap, volatile
         auto gz  = (z + BIZ * BLOCK8);
         auto gid = gx + gy * data_leap.y + gz * data_leap.z;
 
-        if (gx < data_size.x and gy < data_size.y and gz < data_size.z) shm_data[z][y][x] = data[gid];
+        if (gx < data_size.x && gy < data_size.y && gz < data_size.z) shm_data[z][y][x] = data[gid];
     }
     __syncthreads();
 }
@@ -318,7 +318,7 @@ shmem2global_32x8x8data(volatile Output shm_data[9][9][33], Output* data, DIM3 d
         auto gz  = (z + BIZ * BLOCK8);
         auto gid = gx + gy * data_leap.y + gz * data_leap.z;
 
-        if (gx < data_size.x and gy < data_size.y and gz < data_size.z) data[gid] = shm_data[z][y][x];
+        if (gx < data_size.x && gy < data_size.y && gz < data_size.z) data[gid] = shm_data[z][y][x];
     }
     __syncthreads();
 }
@@ -352,10 +352,10 @@ __forceinline__ __device__ void interpolate_stage(
     int         radius)
 {
     static_assert(BLOCK_DIMX * BLOCK_DIMY * (COARSEN ? 1 : BLOCK_DIMZ) <= LINEAR_BLOCK_SIZE, "block oversized");
-    static_assert((BLUE or YELLOW or HOLLOW) == true, "must be one hot");
-    static_assert((BLUE and YELLOW) == false, "must be only one hot (1)");
-    static_assert((BLUE and YELLOW) == false, "must be only one hot (2)");
-    static_assert((YELLOW and HOLLOW) == false, "must be only one hot (3)");
+    static_assert((BLUE || YELLOW || HOLLOW) == true, "must be one hot");
+    static_assert((BLUE && YELLOW) == false, "must be only one hot (1)");
+    static_assert((BLUE && YELLOW) == false, "must be only one hot (2)");
+    static_assert((YELLOW && HOLLOW) == false, "must be only one hot (3)");
 
     auto run = [&](auto x, auto y, auto z) {
         if (xyz33x9x9_predicate<BORDER_INCLUSIVE>(x, y, z)) {
@@ -505,8 +505,8 @@ __device__ void cusz::device_api::spline3d_layout2_interpolate(
     /******************************************************************************
      test only: print a block
      ******************************************************************************/
-    // if (TIX == 0 and BIX == 0 and BIY == 0 and BIZ == 0) { spline3d_print_block_from_GPU(shm_errctrl); }
-    // if (TIX == 0 and BIX == 0 and BIY == 0 and BIZ == 0) { spline3d_print_block_from_GPU(shm_data); }
+    // if (TIX == 0 && BIX == 0 && BIY == 0 && BIZ == 0) { spline3d_print_block_from_GPU(shm_errctrl); }
+    // if (TIX == 0 && BIX == 0 && BIY == 0 && BIZ == 0) { spline3d_print_block_from_GPU(shm_data); }
 }
 
 /********************************************************************************

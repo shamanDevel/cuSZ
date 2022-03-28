@@ -46,7 +46,7 @@ DST* designate(SRC* src)
 {
     // TODO check alignment
     auto aligned = __is_aligned_at<CUSZ_ALIGN_NUM>(src);
-    if (not aligned) throw std::runtime_error("not aligned at " + std::to_string(CUSZ_ALIGN_NUM) + " bytes");
+    if (!aligned) throw std::runtime_error("not aligned at " + std::to_string(CUSZ_ALIGN_NUM) + " bytes");
 
     return reinterpret_cast<DST*>(src);
 }
@@ -57,7 +57,7 @@ DST* free_repurpose(SRC* src)
     // aligning at 4 byte; does not raise misalignment
     // may not result in optimal performance considering coalescing
     auto aligned = __is_aligned_at<4>(src);
-    if (not aligned) throw std::runtime_error("not aligned at 4 bytes");
+    if (!aligned) throw std::runtime_error("not aligned at 4 bytes");
 
     return reinterpret_cast<DST*>(src);
 }

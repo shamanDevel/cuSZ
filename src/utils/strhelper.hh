@@ -126,7 +126,7 @@ struct StrHelper {
 
                 std::smatch v_match;
                 if (std::regex_match(v, v_match, onoff_pattern)) {  //
-                    onoff = (v == "on") or (v == "ON");
+                    onoff = (v == "on") || (v == "ON");
                 }
                 else {
                     throw std::runtime_error("not (k=v)-syntax");

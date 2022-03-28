@@ -91,7 +91,7 @@ void verify_data(stat_t* stat, T* xdata, T* odata, size_t len)
 template <typename Data>
 void print_data_quality_metrics(stat_t* stat, size_t compressed_bytes = 0, bool gpu_checker = false)
 {
-    auto checker = (not gpu_checker) ? string("(using CPU checker)") : string("(using GPU checker)");
+    auto checker = (!gpu_checker) ? string("(using CPU checker)") : string("(using GPU checker)");
     auto bytes   = (stat->len * sizeof(Data) * 1.0);
 
     auto print_ln3 = [](const char* s, double n1, double n2, double n3) {
@@ -107,7 +107,7 @@ void print_data_quality_metrics(stat_t* stat, size_t compressed_bytes = 0, bool 
 
     printf("\nquality metrics %s:\n", checker.c_str());
 
-    auto is_fp = std::is_same<Data, float>::value or std::is_same<Data, double>::value ? const_cast<char*>("yes")
+    auto is_fp = std::is_same<Data, float>::value || std::is_same<Data, double>::value ? const_cast<char*>("yes")
                                                                                        : const_cast<char*>("no");
     print_head("", "data-len", "data-byte", "fp-type?", "");
     printf("  %-10s %16d %16d %16s\n", "", stat->len, sizeof(Data), is_fp);

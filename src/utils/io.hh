@@ -23,7 +23,7 @@ template <typename T>
 T* read_binary_to_new_array(const std::string& fname, size_t dtype_len)
 {
     std::ifstream ifs(fname.c_str(), std::ios::binary | std::ios::in);
-    if (not ifs.is_open()) {
+    if (!ifs.is_open()) {
         std::cerr << "fail to open " << fname << std::endl;
         exit(1);
     }
@@ -37,7 +37,7 @@ template <typename T>
 void read_binary_to_array(const std::string& fname, T* _a, size_t dtype_len)
 {
     std::ifstream ifs(fname.c_str(), std::ios::binary | std::ios::in);
-    if (not ifs.is_open()) {
+    if (!ifs.is_open()) {
         std::cerr << "fail to open " << fname << std::endl;
         exit(1);
     }
@@ -49,7 +49,7 @@ template <typename T>
 void write_array_to_binary(const std::string& fname, T* const _a, size_t const dtype_len)
 {
     std::ofstream ofs(fname.c_str(), std::ios::binary | std::ios::out);
-    if (not ofs.is_open()) return;
+    if (!ofs.is_open()) return;
     ofs.write(reinterpret_cast<const char*>(_a), std::streamsize(dtype_len * sizeof(T)));
     ofs.close();
 }

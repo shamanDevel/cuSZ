@@ -16,6 +16,7 @@
 
 #define tix threadIdx.x
 
+#include <tuple>
 #include <thrust/device_ptr.h>
 #include <thrust/extrema.h>
 #include <thrust/transform_reduce.h>
@@ -50,7 +51,7 @@ std::tuple<T, T, T, T> GetMinMaxRng(thrust::device_ptr<T> g_ptr, size_t len)
     // std::cout << "rng:\t" << rng << '\n';
     // std::cout << "mean:\t" << mean << '\n';
     // TODO redundant types
-    return std::make_tuple<T, T, T, T>((T)min_val, (T)max_val, (T)rng, (T)mean);
+    return std::make_tuple((T)min_val, (T)max_val, (T)rng, (T)mean);
 }
 
 template <typename T>
@@ -84,7 +85,7 @@ void get_max_err(
     maximum_val      = *maximum_ptr;
     maximum_loc      = maximum_ptr - d;
 
-    if (not destructive) { cudaFree(diff); }
+    if (!destructive) { cudaFree(diff); }
 }
 
 template <typename T>

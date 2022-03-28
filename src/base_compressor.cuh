@@ -69,7 +69,7 @@ class BaseCompressor {
      */
     BaseCompressor& generic_dryrun(const std::string fname, double eb, int radius, bool r2r, cudaStream_t stream)
     {
-        if (not nc) throw std::runtime_error("NonCritical struct has no instance.");
+        if (!nc) throw std::runtime_error("NonCritical struct has no instance.");
 
         LOGGING(LOG_INFO, "invoke dry-run");
 

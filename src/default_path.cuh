@@ -149,11 +149,11 @@ class DefaultPathCompressor : public BaseCompressor<typename BINDING::PREDICTOR>
         };
         auto allocate_codec = [&]() {
             if (codec_config == 0b00) throw std::runtime_error("Argument codec_config must have set bit(s).");
-            if (codec_config bitand 0b01) {
+            if (codec_config & 0b01) {
                 LOGGING(LOG_INFO, "allocated 4-byte codec");
                 (*codec).allocate_workspace(codec_in_len, cfg_max_booklen, cfg_pardeg, dbg_print);
             }
-            if (codec_config bitand 0b10) {
+            if (codec_config & 0b10) {
                 LOGGING(LOG_INFO, "allocated 8-byte (fallback) codec");
                 (*fb_codec).allocate_workspace(codec_in_len, cfg_max_booklen, cfg_pardeg, dbg_print);
                 fallback_codec_allocated = true;
@@ -181,11 +181,11 @@ class DefaultPathCompressor : public BaseCompressor<typename BINDING::PREDICTOR>
         };
         auto allocate_codec = [&]() {
             if (codec_config == 0b00) throw std::runtime_error("Argument codec_config must have set bit(s).");
-            if (codec_config bitand 0b01) {
+            if (codec_config & 0b01) {
                 LOGGING(LOG_INFO, "allocated 4-byte codec");
                 (*codec).allocate_workspace(codec_in_len, cfg_max_booklen, cfg_pardeg, dbg_print);
             }
-            if (codec_config bitand 0b10) {
+            if (codec_config & 0b10) {
                 LOGGING(LOG_INFO, "allocated 8-byte (fallback) codec");
                 (*fb_codec).allocate_workspace(codec_in_len, cfg_max_booklen, cfg_pardeg, dbg_print);
                 fallback_codec_allocated = true;
@@ -207,7 +207,7 @@ class DefaultPathCompressor : public BaseCompressor<typename BINDING::PREDICTOR>
         auto time_p = (*predictor).get_time_elapsed();
 
         float time_h, time_b, time_c;
-        if (not use_fallback_codec) {
+        if (!use_fallback_codec) {
             time_h = (*codec).get_time_hist();
             time_b = (*codec).get_time_book();
             time_c = (*codec).get_time_lossless();
@@ -249,7 +249,7 @@ class DefaultPathCompressor : public BaseCompressor<typename BINDING::PREDICTOR>
         auto time_p = (*predictor).get_time_elapsed();
 
         float time_c;
-        if (not use_fallback_codec) { time_c = (*codec).get_time_lossless(); }
+        if (!use_fallback_codec) { time_c = (*codec).get_time_lossless(); }
         else {
             time_c = (*fb_codec).get_time_lossless();
         }
@@ -341,7 +341,7 @@ class DefaultPathCompressor : public BaseCompressor<typename BINDING::PREDICTOR>
         auto codec_do_with_exception = [&]() {
             auto encode_with_fallback_codec = [&]() {
                 use_fallback_codec = true;
-                if (not fallback_codec_allocated) {
+                if (!fallback_codec_allocated) {
                     LOGGING(LOG_EXCEPTION, "online allocate fallback (8-byte) codec");
 
                     (*fb_codec).allocate_workspace(errctrl_len, radius * 2, pardeg, /*dbg print*/ false);
@@ -351,7 +351,7 @@ class DefaultPathCompressor : public BaseCompressor<typename BINDING::PREDICTOR>
                     d_errctrl, errctrl_len, radius * 2, sublen, pardeg, d_codec_out, codec_out_len, stream);
             };
 
-            if (not codec_force_fallback) {
+            if (!codec_force_fallback) {
                 try {
                     (*codec).encode(
                         d_errctrl, errctrl_len, radius * 2, sublen, pardeg, d_codec_out, codec_out_len, stream);
@@ -460,7 +460,7 @@ class DefaultPathCompressor : public BaseCompressor<typename BINDING::PREDICTOR>
         bool         rpt_print = true)
     {
         // TODO host having copy of header when compressing
-        if (not header) {
+        if (!header) {
             header = new HEADER;
             CHECK_CUDA(cudaMemcpyAsync(header, in_compressed, sizeof(HEADER), cudaMemcpyDeviceToHost, stream));
             CHECK_CUDA(cudaStreamSynchronize(stream));
@@ -489,9 +489,9 @@ class DefaultPathCompressor : public BaseCompressor<typename BINDING::PREDICTOR>
 
         auto spreducer_do            = [&]() { (*spreducer).scatter(d_spreducer_in, d_spreducer_out, stream); };
         auto codec_do_with_exception = [&]() {
-            if (not use_fallback_codec) { (*codec).decode(d_decoder_in, d_decoder_out); }
+            if (!use_fallback_codec) { (*codec).decode(d_decoder_in, d_decoder_out); }
             else {
-                if (not fallback_codec_allocated) {
+                if (!fallback_codec_allocated) {
                     (*fb_codec).allocate_workspace(
                         (*predictor).get_quant_len(), radius * 2, vle_pardeg, /*dbg print*/ false);
                     fallback_codec_allocated = true;

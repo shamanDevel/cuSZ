@@ -262,8 +262,8 @@ __global__ void par_huffman::GPU_GenerateCL(
             /* Odd number of nodes to merge - leave out one*/
             else if (
                 (iNodesSize != 0)                                                                        //
-                and (curLeavesNum == 0                                                                   //
-                     or (histogram[lNodesCur + curLeavesNum] <= iNodesFreq[MOD(iNodesRear - 1, size)]))  //
+                && (curLeavesNum == 0                                                                   //
+                     || (histogram[lNodesCur + curLeavesNum] <= iNodesFreq[MOD(iNodesRear - 1, size)]))  //
             ) {
                 mergeRear   = MOD(mergeRear - 1, size);
                 iNodesFront = MOD(iNodesRear - 1, size);
@@ -514,6 +514,7 @@ void kernel_wrapper::par_get_codebook(
     uint8_t*     reverse_codebook,
     cudaStream_t stream)
 {
+#if 0
     // Metadata
     auto type_bw  = sizeof(H) * 8;
     auto _d_first = reinterpret_cast<H*>(reverse_codebook);
@@ -602,7 +603,7 @@ void kernel_wrapper::par_get_codebook(
              << " total" << endl
              << endl;
         // cout << LOG_ERR << "Exiting cuSZ ..." << endl;
-        throw std::system_error();
+        throw std::runtime_error("unspecified cuSZ error");
         // exit(1);
     }
 
@@ -665,7 +666,7 @@ void kernel_wrapper::par_get_codebook(
              << endl;
         // cout << LOG_ERR << "Exiting cuSZ ..." << endl;
         // exit(1);
-        throw std::system_error();
+        throw std::runtime_error("unspecified cuSZ error");
     }
 
     void* CW_Args[] = {
@@ -713,6 +714,7 @@ void kernel_wrapper::par_get_codebook(
 #ifdef D_DEBUG_PRINT
     print_codebook<H><<<1, 32>>>(codebook, dict_size);  // PASS
     cudaStreamSynchronize(stream);
+#endif
 #endif
 }
 

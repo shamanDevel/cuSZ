@@ -108,7 +108,7 @@ void set_config(cuszCTX* ctx, const char* in_str)
         else if (kv.first == "predictor") {
             ctx->str_predictor = string(kv.second);
         }
-        else if (kv.first == "releaseinput" and (kv.second == "on" or kv.second == "ON")) {
+        else if (kv.first == "releaseinput" && (kv.second == "on" || kv.second == "ON")) {
             ctx->on_off.release_input = true;
         }
         else if (kv.first == "density") {  // refer to `SparseMethodSetup` in `config.hh`
@@ -119,14 +119,14 @@ void set_config(cuszCTX* ctx, const char* in_str)
             ctx->nz_density_factor = StrHelper::str2fp(kv.second);
             ctx->nz_density        = 1 / ctx->nz_density_factor;
         }
-        else if (kv.first == "gpuverify" and (kv.second == "on" or kv.second == "ON")) {
+        else if (kv.first == "gpuverify" && (kv.second == "on" || kv.second == "ON")) {
             ctx->on_off.use_gpu_verify = true;
         }
 
         // when to enable anchor
         if (ctx->str_predictor == "spline3") ctx->on_off.use_anchor = true;
-        if ((kv.first == "anchor") and  //
-            (string(kv.second) == "on" or string(kv.second) == "ON"))
+        if ((kv.first == "anchor") &&  //
+            (string(kv.second) == "on" || string(kv.second) == "ON"))
             ctx->on_off.use_anchor = true;
     }
 }
@@ -143,7 +143,7 @@ void cuszCTX::load_demo_sizes()
         {std::string("exafel"), {388, 59200, 1, 1, 2}},    {std::string("rtm"), {235, 849, 849, 1, 3}},
         {std::string("parihaka"), {1168, 1126, 922, 1, 3}}};
 
-    if (not demo_dataset.empty()) {
+    if (!demo_dataset.empty()) {
         auto f = dataset_entries.find(demo_dataset);
         if (f == dataset_entries.end()) throw std::runtime_error("no such dataset as" + demo_dataset);
         auto demo_xyzw = f->second;
@@ -164,18 +164,18 @@ void cuszCTX::check_args_when_cli()
         to_abort = true;
     }
 
-    if (data_len == 1 and not on_off.use_demo) {
-        if (task_is.construct or task_is.dryrun) {
+    if (data_len == 1 && !on_off.use_demo) {
+        if (task_is.construct || task_is.dryrun) {
             cerr << LOG_ERR << "wrong input size" << endl;
             to_abort = true;
         }
     }
-    if (not task_is.construct and not task_is.reconstruct and not task_is.dryrun) {
-        cerr << LOG_ERR << "select compress (-z), decompress (-x) or dry-run (-r)" << endl;
+    if (!task_is.construct && !task_is.reconstruct && !task_is.dryrun) {
+        cerr << LOG_ERR << "select compress (-z), decompress (-x) || dry-run (-r)" << endl;
         to_abort = true;
     }
     if (false == ConfigHelper::check_dtype(dtype, false)) {
-        if (task_is.construct or task_is.dryrun) {
+        if (task_is.construct || task_is.dryrun) {
             cout << dtype << endl;
             cerr << LOG_ERR << "must specify data type" << endl;
             to_abort = true;
@@ -187,19 +187,19 @@ void cuszCTX::check_args_when_cli()
     else if (quant_bytewidth == 2)
         assert(dict_size <= 65536);
 
-    if (task_is.dryrun and task_is.construct and task_is.reconstruct) {
-        cerr << LOG_WARN << "no need to dry-run, compress and decompress at the same time" << endl;
+    if (task_is.dryrun && task_is.construct && task_is.reconstruct) {
+        cerr << LOG_WARN << "no need to dry-run, compress && decompress at the same time" << endl;
         cerr << LOG_WARN << "dryrun only" << endl << endl;
         task_is.construct   = false;
         task_is.reconstruct = false;
     }
-    else if (task_is.dryrun and task_is.construct) {
-        cerr << LOG_WARN << "no need to dry-run and compress at the same time" << endl;
+    else if (task_is.dryrun && task_is.construct) {
+        cerr << LOG_WARN << "no need to dry-run && compress at the same time" << endl;
         cerr << LOG_WARN << "dryrun only" << endl << endl;
         task_is.construct = false;
     }
-    else if (task_is.dryrun and task_is.reconstruct) {
-        cerr << LOG_WARN << "no need to dry-run and decompress at the same time" << endl;
+    else if (task_is.dryrun && task_is.reconstruct) {
+        cerr << LOG_WARN << "no need to dry-run && decompress at the same time" << endl;
         cerr << LOG_WARN << "will dryrun only" << endl << endl;
         task_is.reconstruct = false;
     }
@@ -285,10 +285,10 @@ cuszCTX::cuszCTX(int argc, char** argv)
 
                     if (long_opt == "--opath") {  // TODO the followings has no single-letter options
                         if (i + 1 <= argc)
-                            this->opath = string(argv[++i]);  // TODO does not apply for preprocessed such as binning
+                            this->opath = string(argv[++i]);  // TODO does !apply for preprocessed such as binning
                         break;
                     }
-                    if (long_opt == "--origin" or long_opt == "--compare") {
+                    if (long_opt == "--origin" || long_opt == "--compare") {
                         if (i + 1 <= argc) fname.origin_cmp = string(argv[++i]);
                         break;
                     }
@@ -400,9 +400,9 @@ cuszCTX::cuszCTX(int argc, char** argv)
                 tag_type:
                     if (i + 1 <= argc) {
                         string s = string(string(argv[++i]));
-                        if (s == "f32" or s == "fp4")
+                        if (s == "f32" || s == "fp4")
                             dtype = "f32";
-                        else if (s == "f64" or s == "fp8")
+                        else if (s == "f64" || s == "fp8")
                             dtype = "f64";
                     }
                     break;
@@ -487,15 +487,15 @@ cuszCTX::cuszCTX(const char* config_str, bool dbg_print)
         if (k == "input") { fname.fname = string(v); }
         if (k == "do") {
             if (v == "dryrun") task_is.dryrun = true;
-            if (v == "compress" or v == "zip") task_is.construct = true;
-            if (v == "decompress" or v == "unzip") task_is.reconstruct = true;
+            if (v == "compress" || v == "zip") task_is.construct = true;
+            if (v == "decompress" || v == "unzip") task_is.reconstruct = true;
         }
 
         // mandatory
         // compress
-        if (k == "dtype" and ConfigHelper::check_dtype(v, false)) this->dtype = v;
-        if (k == "errorbound" or k == "eb") eb = std::strtod(v.c_str(), &end);
-        if (k == "mode" and ConfigHelper::check_cuszmode(v, true)) this->mode = v;
+        if (k == "dtype" && ConfigHelper::check_dtype(v, false)) this->dtype = v;
+        if (k == "errorbound" || k == "eb") eb = std::strtod(v.c_str(), &end);
+        if (k == "mode" && ConfigHelper::check_cuszmode(v, true)) this->mode = v;
         if (k == "size") {
             std::vector<string> dims;
             ConfigHelper::parse_length_literal(v.c_str(), dims);
@@ -516,19 +516,19 @@ cuszCTX::cuszCTX(const char* config_str, bool dbg_print)
 
         // optional
         // decompress
-        if (k == "origin" or k == "compare") { fname.origin_cmp = string(v); }
+        if (k == "origin" || k == "compare") { fname.origin_cmp = string(v); }
 
         // future use
         /*
-        if (k == "predictor" and ConfigHelper::check_predictor(v, true)) {
+        if (k == "predictor" && ConfigHelper::check_predictor(v, true)) {
             this->str_predictor = v;
             this->predictor     = ConfigHelper::predictor_lookup(v);
         }
-        if (k == "codec" and ConfigHelper::check_codec(v, true)) {
+        if (k == "codec" && ConfigHelper::check_codec(v, true)) {
             this->str_codec = v;  // TODO
             this->codec     = ConfigHelper::codec_lookup(v);
         }
-        if (k == "spreducer" and ConfigHelper::check_codec(v, true)) {
+        if (k == "spreducer" && ConfigHelper::check_codec(v, true)) {
             this->str_spreducer = v;  // TODO
             this->spreducer     = ConfigHelper::spreducer_lookup(v);
         }
@@ -555,7 +555,7 @@ void cuszCTX::sort_out_fnames()
     // (2) "./fname"        -> "./" "fname"
     // (3) "/path/to/fname" -> "/path/to", "fname"
     auto input_path = fname.fname.substr(0, fname.fname.rfind('/') + 1);
-    if (not task_is.construct and task_is.reconstruct) fname.fname = fname.fname.substr(0, fname.fname.rfind('.'));
+    if (!task_is.construct && task_is.reconstruct) fname.fname = fname.fname.substr(0, fname.fname.rfind('.'));
     fname.basename = fname.fname.substr(fname.fname.rfind('/') + 1);
 
     if (opath.empty()) opath = input_path.empty() ? opath = "" : opath = input_path;

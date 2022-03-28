@@ -12,7 +12,7 @@
 #ifndef CUSZ_COMMON_CONFIGS_HH
 #define CUSZ_COMMON_CONFIGS_HH
 
-#include <cxxabi.h>
+//#include <cxxabi.h>
 #include <cmath>
 #include <fstream>
 #include <limits>
@@ -140,8 +140,8 @@ struct ConfigHelper {
 
     static bool check_predictor(const std::string& val, bool fatal = false)
     {
-        auto legal = (val == "lorenzo") or (val == "spline3");
-        if (not legal) {
+        auto legal = (val == "lorenzo") || (val == "spline3");
+        if (!legal) {
             if (fatal)
                 throw std::runtime_error("`predictor` must be \"lorenzo\" or \"spline3\".");
             else
@@ -153,7 +153,7 @@ struct ConfigHelper {
     static bool check_codec(const std::string& val, bool fatal = false)
     {
         auto legal = (val == "huffman-coarse");
-        if (not legal) {
+        if (!legal) {
             if (fatal)
                 throw std::runtime_error("`codec` must be \"huffman-coarse\".");
             else
@@ -164,8 +164,8 @@ struct ConfigHelper {
 
     static bool check_spreducer(const std::string& val, bool fatal = false)
     {
-        auto legal = (val == "csr11") or (val == "rle");
-        if (not legal) {
+        auto legal = (val == "csr11") || (val == "rle");
+        if (!legal) {
             if (fatal)
                 throw std::runtime_error("`codec` must be \"csr11\" or \"rle\".");
             else
@@ -176,8 +176,8 @@ struct ConfigHelper {
 
     static bool check_cuszmode(const std::string& val, bool fatal = false)
     {
-        auto legal = (val == "r2r") or (val == "abs");
-        if (not legal) {
+        auto legal = (val == "r2r") || (val == "abs");
+        if (!legal) {
             if (fatal)
                 throw std::runtime_error("`mode` must be \"r2r\" or \"abs\".");
             else
@@ -190,7 +190,7 @@ struct ConfigHelper {
     {
         auto legal = (val == "f32");
         // auto legal = (val == "f32") or (val == "f64");
-        if (not legal) {
+        if (! legal) {
             if (fatal)
                 throw std::runtime_error("`dtype` must be \"f32\".");
             else
@@ -207,7 +207,7 @@ struct ConfigHelper {
 
         bool use_charx = data_len_literal.find('x') != std::string::npos;
         bool use_comma = data_len_literal.find(',') != std::string::npos;
-        bool delim_ok  = use_comma or use_charx;
+        bool delim_ok  = use_comma || use_charx;
 
         if (use_charx)
             delimiter = 'x';
@@ -220,7 +220,7 @@ struct ConfigHelper {
             dims.push_back(substr);
         }
 
-        if (dims.size() != 1 and (not delim_ok))
+        if (dims.size() != 1 && (!delim_ok))
             throw std::runtime_error("data-size literal must be delimited by \'x\' or \',\'.");
 
         // TODO check if a good number (size==1) using regex
@@ -236,7 +236,7 @@ struct ConfigHelper {
     static size_t get_npart(T1 size, T2 subsize)
     {
         static_assert(
-            std::numeric_limits<T1>::is_integer and std::numeric_limits<T2>::is_integer,
+            std::numeric_limits<T1>::is_integer && std::numeric_limits<T2>::is_integer,
             "[get_npart] must be plain interger types.");
 
         return (size + subsize - 1) / subsize;
@@ -247,7 +247,7 @@ struct CompareHelper {
     template <typename TRIO>
     static bool eq(TRIO a, TRIO b)
     {  //
-        return (a.x == b.x) and (a.y == b.y) and (a.z == b.z);
+        return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
     };
 };
 
@@ -290,7 +290,7 @@ struct ReportHelper {
     static std::string demangle(const char* name)
     {
         int   status = -4;
-        char* res    = abi::__cxa_demangle(name, nullptr, nullptr, &status);
+        char* res    = nullptr;   // abi::__cxa_demangle(name, nullptr, nullptr, &status);
 
         const char* const demangled_name = (status == 0) ? res : name;
         std::string       ret_val(demangled_name);

@@ -244,7 +244,7 @@ class PredictorLorenzo : public PredictorAbstraction<T, E> {
 
         ndim = 3;
         if (size.z == 1) ndim = 2;
-        if (size.z == 1 and size.y == 1) ndim = 1;
+        if (size.z == 1 && size.y == 1) ndim = 1;
 
         // on off
         delay_postquant    = _delay_postquant;
@@ -287,7 +287,7 @@ class PredictorLorenzo : public PredictorAbstraction<T, E> {
         cudaStream_t const stream               = nullptr,
         T* __restrict__ non_overlap_out_outlier = nullptr)
     {
-        if (not delay_postquant)
+        if (!delay_postquant)
             construct_proxy<false>(in_data, out_anchor, out_errctrl, non_overlap_out_outlier, eb, radius, stream);
         else
             throw std::runtime_error("construct_proxy<delay_postquant==true> not implemented.");
@@ -314,7 +314,7 @@ class PredictorLorenzo : public PredictorAbstraction<T, E> {
         cudaStream_t const stream              = nullptr,
         T* __restrict__ non_overlap_in_outlier = nullptr)
     {
-        if (not delay_postquant)
+        if (!delay_postquant)
             reconstruct_proxy<false>(non_overlap_in_outlier, in_anchor, in_errctrl, out_xdata, eb, radius, stream);
         else
             throw std::runtime_error("construct_proxy<delay_postquant==true> not implemented.");
@@ -356,7 +356,7 @@ class PredictorLorenzo : public PredictorAbstraction<T, E> {
         // allocate
         ALLOCDEV(anchor, T, 0);  // for lorenzo, anchor can be 0
         ALLOCDEV(errctrl, E, sizeof(E) * len_quant);
-        if (not outlier_overlapped) ALLOCDEV(outlier, T, sizeof(T) * len_data);
+        if (!outlier_overlapped) ALLOCDEV(outlier, T, sizeof(T) * len_data);
 
         if (dbg_print) debug();
     }
@@ -391,7 +391,7 @@ class PredictorLorenzo : public PredictorAbstraction<T, E> {
         out_errctrl = d_errctrl;
         out_outlier = d_outlier;
 
-        if (not delay_postquant)
+        if (!delay_postquant)
             construct_proxy<false>(in_data, out_anchor, out_errctrl, out_outlier, eb, radius, stream);
         else
             throw std::runtime_error("construct_proxy<delay_postquant==true> not implemented.");
@@ -418,7 +418,7 @@ class PredictorLorenzo : public PredictorAbstraction<T, E> {
         out_anchor  = d_anchor;
         out_errctrl = d_errctrl;
 
-        if (not delay_postquant)
+        if (!delay_postquant)
             construct_proxy<false>(in_data__out_outlier, out_anchor, out_errctrl, nullptr, eb, radius, stream);
         else
             throw std::runtime_error("construct_proxy<delay_postquant==true> not implemented.");
@@ -444,7 +444,7 @@ class PredictorLorenzo : public PredictorAbstraction<T, E> {
         T*& __restrict__ out_xdata,
         cudaStream_t const stream = nullptr)
     {
-        if (not delay_postquant)
+        if (!delay_postquant)
             reconstruct_proxy<false>(in_outlier, in_anchor, in_errctrl, out_xdata, eb, radius, stream);
         else
             throw std::runtime_error("construct_proxy<delay_postquant==true> not implemented.");
@@ -469,7 +469,7 @@ class PredictorLorenzo : public PredictorAbstraction<T, E> {
         T*&                in_outlier__out_xdata,
         cudaStream_t const stream = nullptr)
     {
-        if (not delay_postquant)
+        if (!delay_postquant)
             reconstruct_proxy<false>(nullptr, in_anchor, in_errctrl, in_outlier__out_xdata, eb, radius, stream);
         else
             throw std::runtime_error("construct_proxy<delay_postquant==true> not implemented.");

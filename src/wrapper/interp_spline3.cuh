@@ -203,7 +203,7 @@ class Spline3 : public PredictorAbstraction<T, E> {
         cudaMalloc(&d_errctrl, nbyte_errctrl);
         cudaMemset(d_errctrl, 0x0, nbyte_errctrl);
 
-        if (not outlier_overlapped) {
+        if (!outlier_overlapped) {
             auto nbyte_outlier = sizeof(T) * get_quant_footprint();
             cudaMalloc(&d_outlier, nbyte_outlier);
             cudaMemset(d_outlier, 0x0, nbyte_outlier);

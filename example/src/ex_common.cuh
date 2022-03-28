@@ -13,7 +13,7 @@
 #define EX_COMMON_CUH
 
 #include <cstdio>
-#include <experimental/random>
+#include <random>
 #include <iostream>
 #include <string>
 using std::cerr;
@@ -43,7 +43,7 @@ void echo_metric_cpu(T* _d1, T* _d2, size_t len, size_t compressed_bytes = 0, bo
     stat_t stat;
     T*     d1;
     T*     d2;
-    if (not from_device) {
+    if (!from_device) {
         d1 = _d1;
         d2 = _d2;
     }
@@ -76,11 +76,13 @@ void echo_metric_cpu(T* _d1, T* _d2, size_t len, size_t compressed_bytes = 0, bo
 template <typename T>
 void gen_randint_array(T* a, SIZE len, int default_num, int ratio)
 {
+    static thread_local std::default_random_engine rng;
+
     auto fill = [&]() {  // fill base numbers
         for (auto i = 0; i < len; i++) { a[i] = default_num; }
     };
-    auto rand_position   = [&]() { return std::experimental::randint(0ul, len - 1); };
-    auto rand_signed_int = [&]() { return std::experimental::randint(-20, 20); };
+    auto rand_position   = [&]() { return std::uniform_int_distribution<SIZE>(0ul, len - 1)(rng); };
+    auto rand_signed_int = [&]() { return std::uniform_int_distribution<int>(-20, 20)(rng); };
     auto randomize       = [&]() {  // change 1/ratio
         for (auto i = 0; i < len / ratio; i++) a[rand_position()] += rand_signed_int();
     };
@@ -121,7 +123,7 @@ void figure_out_eb(CAPSULE& data, double& eb, double& adjusted_eb, bool use_r2r)
  */
 void BARRIER(cudaStream_t stream = nullptr)
 {
-    if (not stream) {
+    if (!stream) {
         CHECK_CUDA(cudaDeviceSynchronize());
         printf("device sync'ed\n");
     }
@@ -150,7 +152,7 @@ void exp__prepare_data(
     CHECK_CUDA(cudaMemset(*decompressed, 0x0, bytes));
 
     if (destructive)
-        if (not uncompressed_backup) throw std::runtime_error("Destructive runtime must have data backed up.");
+        if (!uncompressed_backup) throw std::runtime_error("Destructive runtime must have data backed up.");
 }
 
 template <typename UNCOMPRESSED>

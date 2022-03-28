@@ -66,7 +66,7 @@ class app {
         cudaStream_t stream;
         cudaStreamCreate(&stream);
 
-        if (not dualquant) {
+        if (!dualquant) {
             analysis.init_dualquant_dryrun(xyz);
             analysis.dualquant_dryrun(ctx->fname.fname, ctx->eb, ctx->mode == "r2r", stream);
             analysis.destroy_dualquant_dryrun();
@@ -83,17 +83,17 @@ class app {
    private:
     static void __init_compressor(compressor_t* compressor, context_t ctx, header_t header)
     {
-        if (ctx and header) throw std::runtime_error("init_compressor: two sources for configurations.");
-        if ((not ctx) and (not header))
+        if (ctx && header) throw std::runtime_error("init_compressor: two sources for configurations.");
+        if ((!ctx) && (!header))
             throw std::runtime_error("init_compressor: neither source is for configurations.");
 
         if (ctx) {
-            if (not *compressor) *compressor = new Compressor(get_xyz(ctx));
+            if (!*compressor) *compressor = new Compressor(get_xyz(ctx));
             AutoconfigHelper::autotune(ctx);
             (*compressor)->allocate_workspace(ctx);
         }
         if (header) {
-            if (not *compressor) *compressor = new Compressor(get_xyz(header));
+            if (!*compressor) *compressor = new Compressor(get_xyz(header));
             (*compressor)->allocate_workspace(header);
         }
     }
@@ -101,12 +101,12 @@ class app {
    public:
     void init_compressor(context_t config)
     {
-        if (not compressor) __init_compressor(&compressor, config, nullptr);
+        if (!compressor) __init_compressor(&compressor, config, nullptr);
     }
 
     void init_compressor(header_t config)
     {
-        if (not compressor) __init_compressor(&compressor, nullptr, config);
+        if (!compressor) __init_compressor(&compressor, nullptr, config);
     }
 
     static void destroy_compressor(compressor_t compressor) { delete compressor; }
@@ -156,7 +156,7 @@ class app {
     /**
      * @brief high-level cusz_compress() API, exposing compressed results: `compressed` & `compressed_len`
      *
-     * @param in_uncompressed input uncompressed data, with size known and embedded in params
+     * @param in_uncompressed input uncompressed data, with size known && embedded in params
      * @param params alias for a cusz context
      * @param compressed output 1, binary after compression
      * @param compressed_len output 2, size of the compressed binary
@@ -181,7 +181,7 @@ class app {
     /**
      * @brief high-level cusz_compress() API, hiding: `compressed` & `compressed_len`
      *
-     * @param in_uncompressed input uncompressed data, with size known and embedded in params
+     * @param in_uncompressed input uncompressed data, with size known && embedded in params
      * @param params alias for a cusz context
      * @param stream CUDA stream
      * @param report_time on-off, reporting kernel time
@@ -221,7 +221,7 @@ class app {
 
     void try_write(Capsule<T>& xdata, string basename, bool skip_write)
     {
-        if (not skip_write) xdata.device2host().template to_file<HOST>(basename + ".cuszx");
+        if (!skip_write) xdata.device2host().template to_file<HOST>(basename + ".cuszx");
     }
 
    public:
@@ -248,10 +248,10 @@ class app {
     static void input_shared(Capsule<T>& c, size_t len, T* from_hptr, T* from_dptr, std::string note = "input_<any>")
     {
         auto check_invalid = [&] {
-            if ((not from_hptr) and (not from_dptr))
+            if ((!from_hptr) && (!from_dptr))
                 throw std::runtime_error("input_uncompressed: must have one ptr from host or device");
-            if ((not from_hptr) and (not from_dptr))
-                throw std::runtime_error("input_uncompressed: must not have both ptrs from host and device");
+            if ((!from_hptr) && (!from_dptr))
+                throw std::runtime_error("input_uncompressed: must not have both ptrs from host && device");
         };
 
         check_invalid();

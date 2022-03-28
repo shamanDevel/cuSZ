@@ -49,7 +49,7 @@ struct OK {
     static void ALLOC()
     {
         static_assert(
-            m == cusz::DEV::TEST or m == cusz::DEV::DEV,  //
+            m == cusz::DEV::TEST || m == cusz::DEV::DEV,  //
             "muse be cusz::DEV::TEST or cusz::DEV::DEV; use with caution");
     }
 
@@ -57,7 +57,7 @@ struct OK {
     static void FREE()
     {
         static_assert(
-            m == cusz::DEV::TEST or m == cusz::DEV::DEV,  //
+            m == cusz::DEV::TEST || m == cusz::DEV::DEV,  //
             "muse be cusz::DEV::TEST or cusz::DEV::DEV; use with caution");
     }
 };

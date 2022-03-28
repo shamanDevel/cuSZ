@@ -27,6 +27,22 @@ const string LOG_WARN      = "WARN  ";
 const string LOG_DBG       = " dbg  ";
 const string LOG_EXCEPTION = "  !!  ";
 
+#if _WIN32
+//windows port of Linux-only functions
+#include <stdarg.h>
+
+int vasprintf(char** strp, const char* fmt, va_list ap);
+static inline int asprintf(char** strp, const char* fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    int r = vasprintf(strp, fmt, ap);
+    va_end(ap);
+    return r;
+}
+
+#endif
+
 // https://stackoverflow.com/a/26080768/8740097  CC BY-SA 3.0
 template <typename T>
 void build(std::ostream& o, T t)

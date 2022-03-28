@@ -55,7 +55,7 @@ struct PredictorReducerCodecBinding {
     static void type_matching()
     {
         static_assert(
-            std::is_same<T1, T2>::value and std::is_same<T1, T3>::value,
+            std::is_same<T1, T2>::value && std::is_same<T1, T3>::value,
             "Predictor::Origin, Predictor::Anchor, and SpReducer::Origin must be the same.");
 
         static_assert(std::is_same<E1, E2>::value, "Predictor::ErrCtrl and Codec::Origin must be the same.");
@@ -66,16 +66,16 @@ struct PredictorReducerCodecBinding {
 
         // TODO open up the possibility of (E1 neq E2) and (E1 being FP)
         static_assert(
-            std::numeric_limits<E1>::is_integer and std::is_unsigned<E1>::value,
+            std::numeric_limits<E1>::is_integer && std::is_unsigned<E1>::value,
             "Predictor::ErrCtrl must be unsigned integer.");
 
         static_assert(
-            std::numeric_limits<H>::is_integer and std::is_unsigned<H>::value,
+            std::numeric_limits<H>::is_integer && std::is_unsigned<H>::value,
             "Codec::Encoded must be unsigned integer.");
 
         // fallback
         static_assert(
-            std::numeric_limits<H_FB>::is_integer and std::is_unsigned<H>::value,
+            std::numeric_limits<H_FB>::is_integer && std::is_unsigned<H>::value,
             "Codec::Encoded must be unsigned integer.");
     }
 
@@ -84,10 +84,10 @@ struct PredictorReducerCodecBinding {
     {
         // !! The compiler does not support/generate constexpr properly
         // !! just put combinations
-        if CONSTEXPR (std::is_same<Stage1, Predictor>::value and std::is_same<Stage2, SpReducer>::value)
+        if CONSTEXPR (std::is_same<Stage1, Predictor>::value && std::is_same<Stage2, SpReducer>::value)
             return s->get_outlier_len();
 
-        if CONSTEXPR (std::is_same<Stage1, Predictor>::value and std::is_same<Stage2, Codec>::value)  //
+        if CONSTEXPR (std::is_same<Stage1, Predictor>::value && std::is_same<Stage2, Codec>::value)  //
             return s->get_quant_len();
     }
 };
