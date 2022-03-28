@@ -514,7 +514,6 @@ void kernel_wrapper::par_get_codebook(
     uint8_t*     reverse_codebook,
     cudaStream_t stream)
 {
-#if 0
     // Metadata
     auto type_bw  = sizeof(H) * 8;
     auto _d_first = reinterpret_cast<H*>(reverse_codebook);
@@ -714,7 +713,6 @@ void kernel_wrapper::par_get_codebook(
 #ifdef D_DEBUG_PRINT
     print_codebook<H><<<1, 32>>>(codebook, dict_size);  // PASS
     cudaStreamSynchronize(stream);
-#endif
 #endif
 }
 
